@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build, Push and Deploy to Herok
+      - name: Build, Push and Deploy to Heroku
         id: heroku
         uses: jctaveras/heroku-deploy@v1.0.0
         with:
