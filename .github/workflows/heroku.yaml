@@ -1,4 +1,4 @@
-name: 'Metricool Heroku Deploy'
+name: 'Teamlitcs Heroku Deploy'
 on: push
 jobs:
   build:
