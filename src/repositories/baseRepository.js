@@ -11,4 +11,4 @@ const createBase = async (data, query, dataMapping) => {
   }
 };
 
-export default { createBase };
+export { createBase };

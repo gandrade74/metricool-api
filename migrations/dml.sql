@@ -1,1 +1,1 @@
-insert into providers values (1, 'Jira'), (2, 'Github')
+insert into providers (name) values ('jira'), ('github')
