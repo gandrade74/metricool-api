@@ -1,5 +1,5 @@
-import * as ProjectService from '../repositories/projectRepository';
+import * as ProjectRepository from '../repositories/projectRepository';
 
-const create = async data => {};
+const createUser = async data => {};
 
-export { create };
+export { createUser };

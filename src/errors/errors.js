@@ -1,9 +1,19 @@
 import CustomError from './customError';
 
 export const errorMessages = {
-  genericError: 'Erro ao processar a requisição',
-  genericDbError: 'Erro ao acessar à base de dados',
-  requestBadFormat: 'A requisição está mal formatada'
+  genericError: 'Error while processing the request',
+  genericDbError: 'Database error',
+  requestBadFormat: 'Bad format for request',
+  validators: {
+    required: 'Required field'
+  },
+  users: {
+    alreadyExists: 'A user already exists with the email informed'
+  },
+  auth: {
+    invalidGrantType: 'Invalid grant type',
+    invalidRefreshToken: 'Invalid refresh token'
+  }
 };
 
 export const errorTypes = Object.freeze({

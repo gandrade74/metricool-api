@@ -6,7 +6,8 @@ const pool = new Pool({
   host: config.postgres.host,
   database: config.postgres.database,
   password: config.postgres.password,
-  port: config.postgres.port
+  port: config.postgres.port,
+  ssl: { rejectUnauthorized: false }
 });
 
 export default pool;

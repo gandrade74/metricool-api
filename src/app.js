@@ -4,7 +4,8 @@ import * as bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import config from './config';
 import errorHandling from './middlewares/errorHandling';
-import authenticationMiddleware from './middlewares/authenticationMiddleware';
+import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 import jiraRoutes from './routes/jiraRoutes';
 
 dotenv.config();
@@ -21,8 +22,9 @@ app.use(
 app.use(cors());
 app.use(bodyParser.json());
 app.use(errorHandling.syntaxError);
-app.use(authenticationMiddleware);
 
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 app.use('/jira', jiraRoutes);
 
 app.listen(port, async () => {
