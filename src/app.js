@@ -6,7 +6,7 @@ import config from './config';
 import errorHandling from './middlewares/errorHandling';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
-import jiraRoutes from './routes/jiraRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.use(errorHandling.syntaxError);
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-app.use('/jira', jiraRoutes);
+app.use('/dashboards', dashboardRoutes);
 
 app.listen(port, async () => {
   console.log(`Server listening on ${port}`);

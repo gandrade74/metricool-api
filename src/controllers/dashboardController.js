@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
-import * as Jira from '../providers/jira';
+import { getProvider } from '../providers/factory';
 
-const getProjects = async (req, res, next) => {
+const getProjectsBoards = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -13,10 +13,14 @@ const getProjects = async (req, res, next) => {
       return next();
     }
 
-    const token = req.header('Authorization');
-    const baseUrl = req.header('Organization-Url');
+    const type = req.header('x-provider');
+    const user = req.header('x-user');
+    const token = req.header('x-token');
+    const url = req.header('x-base-url');
 
-    const result = await Jira.getProjects(token, baseUrl);
+    const provider = getProvider(type);
+    const result = await provider.getProjectsBoards(user, token, url);
+
     res.status(200).send(result);
   } catch (e) {
     console.error(e);
@@ -29,7 +33,7 @@ const getProjects = async (req, res, next) => {
   return next();
 };
 
-const setupProject = async (req, res, next) => {
+const setup = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -41,11 +45,7 @@ const setupProject = async (req, res, next) => {
       return next();
     }
 
-    const token = req.header('Authorization');
-    const baseUrl = req.header('Organization-Url');
-
-    const result = await Jira.getProjects(token, baseUrl);
-    res.status(200).send(result);
+    res.status(200).send();
   } catch (e) {
     console.error(e);
     res.status(500).send({
@@ -57,4 +57,4 @@ const setupProject = async (req, res, next) => {
   return next();
 };
 
-export { getProjects, setupProject };
+export { getProjectsBoards, setup };
