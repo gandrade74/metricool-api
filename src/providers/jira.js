@@ -32,6 +32,15 @@ const getWithPagination = async (
   );
 };
 
+const get = async (url, requestConfig, resultMap) => {
+  const apiUrl = new URL(url);
+
+  const result = await axios.get(apiUrl.href, requestConfig);
+  const resultMapped = resultMap(result.data);
+
+  return resultMapped;
+};
+
 const buidAuthorizationHeader = (currentHeaders, user, token) => {
   const requestHeaders = currentHeaders;
   const userToken = `${user}:${token}`;
@@ -127,6 +136,28 @@ const getProject = async (user, token, baseUrl, projectKey) => {
   return result[projectKey];
 };
 
+const getProjectDetails = async (user, token, baseUrl, projectKey) => {
+  const requestHeaders = buidAuthorizationHeader(headers, user, token);
+  const requestUrl = `rest/api/3/project/${projectKey}`;
+  const url = new URL(requestUrl, baseUrl);
+  const issueTypesMapping = x => ({
+    id: x.id,
+    description: x.description,
+    name: x.name,
+    hierarchyLevel: x.hierarchyLevel
+  });
+  const mapping = x => ({
+    id: x.id,
+    key: x.key,
+    name: x.name,
+    issueTypes: x.issueTypes.map(y => issueTypesMapping(y))
+  });
+
+  const result = await get(url.href, requestHeaders, mapping);
+
+  return result;
+};
+
 const hasPermission = async (user, token, baseUrl) => {
   try {
     const requestUrl = '/rest/api/3/permissions';
@@ -143,5 +174,6 @@ const hasPermission = async (user, token, baseUrl) => {
 export default {
   hasPermission,
   getProjects,
-  getProject
+  getProject,
+  getProjectDetails
 };
