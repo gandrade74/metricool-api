@@ -15,9 +15,6 @@ const getWithPagination = async (
   apiUrl.searchParams.append('startAt', startAt);
 
   const result = await axios.get(apiUrl.href, requestConfig);
-
-  console.log(apiUrl.href);
-
   const resultMapped = result.data.values.map(x => resultMap(x));
   const resultDataMapped = [].concat(resultData, resultMapped);
 

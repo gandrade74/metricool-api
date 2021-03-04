@@ -1,18 +1,20 @@
 import { validationResult } from 'express-validator';
 import { getProvider } from '../providers/factory';
 import { create } from '../services/dashboardService';
-import { handleControllerError } from '../errors/errors';
+import {
+  errorTypes,
+  handleControllerError,
+  handleControllerUnexpectedError
+} from '../errors/errors';
+import CustomError from '../errors/customError';
 
-const getProjects = async (req, res, next) => {
+const getProjects = async (req, res) => {
   try {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.status(400).json({
-        errors: errors.array()
-      });
-
-      return next();
+      const error = new CustomError(errorTypes.Validation, errors.array());
+      return handleControllerError(res, error);
     }
 
     const type = req.header('x-provider');
@@ -23,28 +25,19 @@ const getProjects = async (req, res, next) => {
     const provider = getProvider(type);
     const result = await provider.getProjects(user, token, url);
 
-    res.status(200).send(result);
+    return res.status(200).send(result);
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      message:
-        'Error while processing the request. See the logs for more information.'
-    });
+    return handleControllerUnexpectedError(res, e);
   }
-
-  return next();
 };
 
-const setup = async (req, res, next) => {
+const setup = async (req, res) => {
   try {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.status(400).json({
-        errors: errors.array()
-      });
-
-      return next();
+      const error = new CustomError(errorTypes.Validation, errors.array());
+      return handleControllerError(res, error);
     }
 
     const dashboard = await create(req.body, req.userId);
@@ -53,16 +46,31 @@ const setup = async (req, res, next) => {
       return handleControllerError(res, dashboard.error);
     }
 
-    res.status(200).send(dashboard.data);
+    return res.status(200).send(dashboard.data);
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      message:
-        'Error while processing the request. See the logs for more information.'
-    });
+    return handleControllerUnexpectedError(res, e);
   }
-
-  return next();
 };
 
-export { setup, getProjects };
+const sync = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const error = new CustomError(errorTypes.Validation, errors.array());
+      return handleControllerError(res, error);
+    }
+
+    const dashboard = await create(req.body, req.userId);
+
+    if (dashboard.error) {
+      return handleControllerError(res, dashboard.error);
+    }
+
+    return res.status(200).send(dashboard.data);
+  } catch (e) {
+    return handleControllerUnexpectedError(res, e);
+  }
+};
+
+export { getProjects, setup, sync };
