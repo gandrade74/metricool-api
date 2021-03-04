@@ -29,7 +29,7 @@ const create = async data => {
     return response;
   }
 
-  const id = await UserRepository.create(userData);
+  const id = await UserRepository.create(userData.email, userData.password);
 
   response.data = { id, email };
 

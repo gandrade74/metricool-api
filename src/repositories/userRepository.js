@@ -1,13 +1,14 @@
 import * as BaseRepository from './baseRepository';
 
-const create = async data => {
-  const query = 'insert into users (email, password) values ($1, $2)';
-  const importId = await BaseRepository.insertReturningId(query, [
-    data.email,
-    data.password
+const create = async (email, password) => {
+  const query =
+    'insert into users (email, password) values ($1, $2) returning id';
+  const userId = await BaseRepository.insertReturningId(query, [
+    email,
+    password
   ]);
 
-  return importId;
+  return userId;
 };
 
 const get = async id => {

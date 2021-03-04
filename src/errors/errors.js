@@ -13,6 +13,12 @@ export const errorMessages = {
   auth: {
     invalidGrantType: 'Invalid grant type',
     invalidRefreshToken: 'Invalid refresh token'
+  },
+  dashboards: {
+    alreadyExists:
+      'Another dashboard for the same project and board is already configured for the user',
+    projectNotExists: 'Project not exists',
+    boardDoesNotBelongsToProject: 'Board does not belongs to project'
   }
 };
 

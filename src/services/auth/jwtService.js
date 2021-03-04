@@ -7,7 +7,8 @@ const publicKey = fs.readFileSync(`${__dirname}/public.key`, 'utf8');
 
 const generateToken = async (req, res, user) => {
   const payload = {
-    email: user.email
+    email: user.email,
+    id: user.id
   };
 
   const signOptions = {

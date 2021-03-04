@@ -17,7 +17,8 @@ const insert = async (query, params) => {
 };
 
 const insertReturningId = async (query, params) => {
-  return execute(query, params);
+  const result = await execute(query, params);
+  return result[0];
 };
 
 const insertMany = async (query, data, map) => {

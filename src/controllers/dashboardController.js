@@ -1,7 +1,9 @@
 import { validationResult } from 'express-validator';
 import { getProvider } from '../providers/factory';
+import { create } from '../services/dashboardService';
+import { handleControllerError } from '../errors/errors';
 
-const getProjectsBoards = async (req, res, next) => {
+const getProjects = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -19,7 +21,7 @@ const getProjectsBoards = async (req, res, next) => {
     const url = req.header('x-base-url');
 
     const provider = getProvider(type);
-    const result = await provider.getProjectsBoards(user, token, url);
+    const result = await provider.getProjects(user, token, url);
 
     res.status(200).send(result);
   } catch (e) {
@@ -45,7 +47,13 @@ const setup = async (req, res, next) => {
       return next();
     }
 
-    res.status(200).send();
+    const dashboard = await create(req.body, req.userId);
+
+    if (dashboard.error) {
+      return handleControllerError(res, dashboard.error);
+    }
+
+    res.status(200).send(dashboard.data);
   } catch (e) {
     console.error(e);
     res.status(500).send({
@@ -57,4 +65,4 @@ const setup = async (req, res, next) => {
   return next();
 };
 
-export { getProjectsBoards, setup };
+export { setup, getProjects };
