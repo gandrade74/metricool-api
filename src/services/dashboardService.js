@@ -7,6 +7,7 @@ import * as DashboardRepository from '../repositories/dashboardRepository';
 import * as ProjectRepository from '../repositories/projectRepository';
 import * as BoardRepository from '../repositories/boardRepository';
 import * as WorkTypeRepository from '../repositories/workTypeRepository';
+import * as StatusRepository from '../repositories/statusRepository';
 
 const getOrg = (provider, url) => {
   if (provider === Providers.Jira) {
@@ -135,7 +136,14 @@ const sync = async (dashboardId, userId) => {
     return response;
   }
 
-  console.log(projectDetails.issueTypes);
+  const projectStatuses = await providerInstance.getProjectStatuses(
+    login,
+    apiToken,
+    baseUrl,
+    projectKey
+  );
+
+  await StatusRepository.create(projectStatuses, dashboard.projectId);
 
   await WorkTypeRepository.create(
     projectDetails.issueTypes,

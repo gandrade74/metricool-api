@@ -18,7 +18,7 @@ const create = async ({ id, name, type, projectId }) => {
 
 const getById = async id => {
   const query = 'select * from boards where id = $1';
-  const result = await BaseRepository.get(query, [key]);
+  const result = await BaseRepository.get(query, [id]);
 
   return result.length ? result[0] : null;
 };

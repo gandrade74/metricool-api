@@ -158,6 +158,30 @@ const getProjectDetails = async (user, token, baseUrl, projectKey) => {
   return result;
 };
 
+const getProjectStatuses = async (user, token, baseUrl, projectKey) => {
+  const requestHeaders = buidAuthorizationHeader(headers, user, token);
+  const requestUrl = `rest/api/3/project/${projectKey}/statuses`;
+  const url = new URL(requestUrl, baseUrl);
+  const itemMap = z => ({
+    id: z.id,
+    name: z.name,
+    description: z.description,
+    categoryName: z.statusCategory.name
+  });
+  const mapping = x => {
+    const data = x.map(y => y.statuses.map(itemMap)).flat();
+    return data;
+  };
+
+  let result = await get(url.href, requestHeaders, mapping);
+
+  result = result.filter(
+    (thing, index, self) => index === self.findIndex(t => t.id === thing.id)
+  );
+
+  return result;
+};
+
 const getProjectIssues = async (user, token, baseUrl, projectKey) => {
   const requestHeaders = buidAuthorizationHeader(headers, user, token);
   const requestUrl = `rest/api/3/search?jql=project%3D${projectKey}`;
@@ -217,5 +241,7 @@ export default {
   hasPermission,
   getProjects,
   getProject,
-  getProjectDetails
+  getProjectDetails,
+  getProjectIssues,
+  getProjectStatuses
 };

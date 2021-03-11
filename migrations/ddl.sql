@@ -4,7 +4,6 @@ create table users (
 	password varchar not null
 );
 
-
 create table projects (
 	id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	original_id int not null,
@@ -46,6 +45,17 @@ create table project_work_types (
 	name varchar,
 	description varchar,
 	hierarchy_level smallint,
+	project_id uuid,
+	foreign key (project_id) references projects (id),
+	unique (original_id, project_id)
+);
+
+create table project_statuses (
+	id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+	original_id int not null,
+	name varchar not null,
+	description varchar not null,
+	category_name varchar not null,
 	project_id uuid,
 	foreign key (project_id) references projects (id),
 	unique (original_id, project_id)
