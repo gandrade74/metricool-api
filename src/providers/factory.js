@@ -1,11 +1,12 @@
 import jira from './jira';
 import github from './github';
+import Providers from '../enums/providers';
 
 const getProvider = type => {
   switch (type) {
-    case 'jira':
+    case Providers.Jira:
       return jira;
-    case 'github':
+    case Providers.Github:
       return github;
     default:
       throw new Error('Invalid provider');

@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
 import { getProvider } from '../providers/factory';
-import { create } from '../services/dashboardService';
+import * as DashboardService from '../services/dashboardService';
 import {
   errorTypes,
   handleControllerError,
@@ -67,7 +67,7 @@ const setup = async (req, res) => {
       return handleControllerError(res, error);
     }
 
-    const dashboard = await create(req.body, req.userId);
+    const dashboard = await DashboardService.create(req.body, req.userId);
 
     if (dashboard.error) {
       return handleControllerError(res, dashboard.error);
@@ -88,7 +88,12 @@ const sync = async (req, res) => {
       return handleControllerError(res, error);
     }
 
-    const dashboard = await create(req.body, req.userId);
+    console.log(req.params.dashboardId);
+
+    const dashboard = await DashboardService.sync(
+      req.params.dashboardId,
+      req.userId
+    );
 
     if (dashboard.error) {
       return handleControllerError(res, dashboard.error);

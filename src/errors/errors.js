@@ -18,7 +18,9 @@ export const errorMessages = {
     alreadyExists:
       'Another dashboard for the same project and board is already configured for the user',
     projectNotExists: 'Project not exists',
-    boardDoesNotBelongsToProject: 'Board does not belongs to project'
+    boardDoesNotBelongsToProject: 'Board does not belongs to project',
+    notFound: 'Dashboard not found',
+    dashboardDoesNotBelongsToUser: 'Dashboard does not belongs to user'
   }
 };
 
@@ -26,7 +28,8 @@ export const errorTypes = Object.freeze({
   Conflict: 'conflict',
   Unexpected: 'unexpected',
   Validation: 'validation',
-  NotFound: 'notFound'
+  NotFound: 'notFound',
+  Forbidden: 'forbidden'
 });
 
 const mapError = error => ({
@@ -45,6 +48,10 @@ export const handleControllerError = (res, error) => {
 
   if (error.type === errorTypes.NotFound) {
     return res.status(404).json({ messages: error.messages });
+  }
+
+  if (error.type === errorTypes.Forbidden) {
+    return res.status(403).json({ messages: error.messages });
   }
 
   return res.status(500).json(mapError(error));

@@ -1,12 +1,28 @@
-import { createBase } from './baseRepository';
+import * as BaseRepository from './baseRepository';
 
-const createProject = async (data, organizationId) => {
-  const dataMapping = x => [x.name, x.description, x.url, x.id, organizationId];
+const create = async ({ id, name, key, org }) => {
+  console.log(org);
 
-  const query =
-    'insert into projects (name, description, url, original_id, organization_id) values values %';
+  const query = `
+    insert into projects (original_id, name, key, org)
+    values ($1, $2, $3, $4)
+    on conflict (original_id, org) do update set name=EXCLUDED.name returning id`;
 
-  await createBase(data, query, dataMapping);
+  const projectId = await BaseRepository.insertReturningId(query, [
+    id,
+    name,
+    key,
+    org
+  ]);
+
+  return projectId;
 };
 
-export { createProject };
+const getByKey = async key => {
+  const query = 'select * from projects where key = $1';
+  const result = await BaseRepository.get(query, [key]);
+
+  return result.length ? result[0] : null;
+};
+
+export { create, getByKey };

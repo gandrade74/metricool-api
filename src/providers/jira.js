@@ -18,7 +18,7 @@ const getWithPagination = async (
   const resultMapped = result.data.values.map(x => resultMap(x));
   const resultDataMapped = [].concat(resultData, resultMapped);
 
-  if (result.data.isLast) {
+  if (result.data.startAt + perPage >= result.data.total) {
     return resultDataMapped;
   }
 
@@ -154,6 +154,48 @@ const getProjectDetails = async (user, token, baseUrl, projectKey) => {
   });
 
   const result = await get(url.href, requestHeaders, mapping);
+
+  return result;
+};
+
+const getProjectIssues = async (user, token, baseUrl, projectKey) => {
+  const requestHeaders = buidAuthorizationHeader(headers, user, token);
+  const requestUrl = `rest/api/3/search?jql=project%3D${projectKey}`;
+  const url = new URL(requestUrl, baseUrl);
+  const mapping = x => ({
+    id: x.id,
+    name: x.name,
+    type: x.type,
+    project: {
+      id: x.location?.projectId,
+      key: x.location?.projectKey,
+      name: x.location?.name
+    }
+  });
+
+  let result = await getWithPagination(
+    url.href,
+    requestHeaders,
+    0,
+    null,
+    [],
+    mapping
+  );
+
+  result = result.reduce((r, curr) => {
+    r[curr.project.id] = r[curr.project.id] || {
+      id: curr.project.id,
+      name: curr.project.name,
+      key: curr.project.key,
+      boards: []
+    };
+
+    const item = r[curr.project.id];
+
+    item.boards.push({ id: curr.id, name: curr.name, type: curr.type });
+
+    return r;
+  }, {});
 
   return result;
 };
